@@ -1,0 +1,36 @@
+/**
+* All these styles is used to built layout and loading animation for demo page
+* It's not apart of angular module.
+*/
+.center {
+  text-align: center;
+}
+.small {
+  font-size:14px;
+  font-weight: normal;
+  margin-left: 10px;
+}
+.wrapper {
+  margin:0 auto;
+  width: 500px;   /*  you can set width values to any grid's ancestor,
+                      it was used to define photo grid's wrap width when init,
+                      otherwise default value would be taken in directive*/
+}
+.feed-item{
+  overflow: hidden;
+  border:1px solid #adadad;
+}
+.feed-photos {
+  position: relative;
+  min-height: 100px;
+}
+.feed-photos.loading::after {
+  content: "";
+  height: 100%;
+  width: 100%;
+  background: rgba(0,0,0,.6) url("loader.gif") center center no-repeat;
+  left:0;
+  top:0;
+  position: absolute;
+
+}

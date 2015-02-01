@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Angulars practices</title>
+    <link href="css/style.css" media="screen" rel="stylesheet" />
+
+    <script src="js/angular.min.js"></script>
+    <script src="js/ngPhotoGrid.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-app='ngApp'>
+    <div class='wrapper' ng-controller="indexCtrl">
+      <div class="header">
+        <h1 class='center'>ngPhotoGrid<small class='small'><i>facebook like photo grid in angularjs.</i></small></h1>
+
+      </div>
+      <div class='content'>
+        <div class="feed-item">
+          <div  ng-photo-grid =   ""
+                images        =   "images"
+                ng-class      =   "{'loading': isBuildingGrid}"
+                class         =   "feed-photos"
+                clicked       =   "clickHandler(image)"
+                builded       =   "buildCompletedHandler()">
+          </div>
+        </div>
+        <p class='small'><i>click on image or turn on firebug to see the callback.</i></p>
+      </div>
+
+      <div class='footer'>
+        <p>by Jerryc Nguyen in angular practices</p>
+      </div>
+    </div>
+  </body>
+</html>
