@@ -129,20 +129,24 @@ angular.module("ngPhotoGrid")
           imageStyle    = {}
 
           //positioning the image in the small cell for better look
-          if((image.naturalHeight > smallCellHeight) && (image.naturalWidth > smallCellWidth)) {
-            var marginTop, imageStyle;
+          var marginTop, imageStyle;
 
-            // only positioning the small cell
-            if(curHeight > smallCellHeight + 10 && index != 0) { //when height > smallCellHeight
+          // only positioning the small cell
+          if(index != 0) {
+            if(curHeight > smallCellHeight) { //when height > smallCellHeight
               marginTop             = (curHeight - smallCellHeight) / 2;
               imageStyle.marginTop  = "-" + marginTop + "px";
+            } else {
+              // scale up the image when the curHeight = smallCellHeight
+              imageStyle.height     = smallCellHeight + "px";
+              imageStyle.width      = smallCellHeight * curRatio + "px"
+              marginLeft            = (smallCellHeight * curRatio - smallCellWidth) / 2
+              imageStyle.marginLeft = "-" + marginLeft + "px";
             }
+          } else if (index == 0 && curRatio >= 1
+                    && (image.naturalWidth < bigCellWidth || image.naturalWidth < scope.parentWidth)) {
 
-            //@todo when width > smallCellWidth
-          }
-
-          //if the natural width of image were too small, we would scale it up to parent's wrap
-          if (index == 0 && curRatio >= 1 && (image.naturalWidth < bigCellWidth || image.naturalWidth < scope.parentWidth)) {
+            //if the natural width of image were too small, we would scale it up to parent's wrap
             imageStyle.width  = "100%";
           }
 
