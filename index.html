@@ -11,24 +11,25 @@
   <body ng-app='ngApp'>
     <div class='wrapper' ng-controller="indexCtrl">
       <div class="header">
-        <h1 class='center'>ngPhotoGrid<small class='small'><i>facebook like photo grid in angularjs.</i></small></h1>
-
+        <h1>
+          <a href="https://github.com/jerryc-nguyen/ng-photo-grid" target="_blank">ngPhotoGrid</a>
+            <small class='small'><i>facebook like photo grid in angularjs.</i></small>
+        </h1>
       </div>
       <div class='content'>
         <div class="feed-item">
           <div  ng-photo-grid =   ""
                 images        =   "images"
+                grid-options  =   "gridOptions"
                 ng-class      =   "{'loading': isBuildingGrid}"
-                class         =   "feed-photos"
-                clicked       =   "clickHandler(image)"
-                builded       =   "buildCompletedHandler()">
+                class         =   "feed-photos">
           </div>
         </div>
         <p class='small'><i>click on image or turn on firebug to see the callback.</i></p>
       </div>
 
       <div class='footer'>
-        <p>by Jerryc Nguyen in angular practices</p>
+        <p>by Jerryc Nguyen, <a href="https://github.com/jerryc-nguyen/ng-photo-grid" target="_blank">source on github</a></p>
       </div>
     </div>
   </body>

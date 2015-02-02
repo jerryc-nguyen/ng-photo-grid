@@ -12,16 +12,27 @@ angular.module("ngPhotoGrid")
       scope.takenImages         = [];
 
       // ###OPTIONS
-      // @todo make this configurable
-      scope.URL_KEY             = "original_url";
-      scope.SORT_BY_KEY         = "nth";
+      scope.defaultOptions      = {
+                                    urlKey        :     "original_url",
+                                    sortByKey     :     "nth",
+                                    onClicked     :     function() {},
+                                    onBuilded     :     function() {},
+                                    margin        :     2,
+                                    maxLength     :     7
+                                  }
+
+      angular.extend(scope.defaultOptions, scope.gridOptions);
+
+      scope.URL_KEY             = scope.defaultOptions.urlKey;
+      scope.SORT_BY_KEY         = scope.defaultOptions.sortByKey;
       scope.parentWidth         = element.prop('offsetWidth');
-      scope.MARGIN              = 2
+      scope.MARGIN              = scope.defaultOptions.margin;
+      scope.MAX_LENGTH          = scope.defaultOptions.maxLength;
 
       if (!scope.parentWidth || scope.parentWidth < 320) { // set the default width of parent
         scope.parentWidth       = 320
       }
-      scope.parentStyle         = {width: scope.parentWidth + "px", overflow: "hidden"}
+      scope.parentStyle         = { width: scope.parentWidth + "px", overflow: "hidden" }
       scope.commonStyle         = {
                                     display:        'inline-block',
                                     position:       'relative',
@@ -33,14 +44,13 @@ angular.module("ngPhotoGrid")
 
       //callback handler
       scope.cellClicked = function(image) {
-        if(scope.clicked) {
-          scope.clicked({image: image})
-        }
+        scope.defaultOptions.onClicked(image)
       }
 
       /**
-       * take first 4 sorted images
-       */
+      * choose images from the url source to build grid
+      * take maximum 7 images for best looking
+      *------------------------------------------------*/
       scope.chooseImages = function() {
         angular.forEach(scope.images, function(image, index) {
           var randNumber; //set the id and nth value for image if does not have
@@ -52,7 +62,12 @@ angular.module("ngPhotoGrid")
         sortedImages = scope.images.sort(function(a, b) {
           return a[scope.SORT_BY_KEY] - b[scope.SORT_BY_KEY]
         })
-        return sortedImages.slice(0, 5)
+
+        if(sortedImages.length < scope.MAX_LENGTH) {
+          return sortedImages
+        } else {
+          return sortedImages.slice(0, scope.MAX_LENGTH)
+        }
       }
 
       scope.randomNumber = function(max) {
@@ -83,9 +98,7 @@ angular.module("ngPhotoGrid")
 
             if(scope.loadedTakenImages.length == scope.takenImages.length) {
               //trigger build completed handler
-              if (scope.builded) {
-                scope.builded()
-              }
+              scope.defaultOptions.onBuilded()
 
               //grid also can be build after all image loaded
               //all image would be shown correctly, loading time cause poor UX
@@ -194,7 +207,7 @@ angular.module("ngPhotoGrid")
           smallCellStyle.width  = smallCellWidth;
 
           // determine the height of smallCell below
-          if (ratio > 1.3 && ratio < 1.5) { // 4/3 < ratio < 5:3
+          if (ratio > 1.3 && ratio < 1.5) { // 4:3 < ratio < 5:3
             smallCellHeight     = smallCellWidth / ratio;
           } else if (ratio > 1.5) {
             smallCellHeight     = smallCellWidth / 1.5
@@ -266,9 +279,7 @@ angular.module("ngPhotoGrid")
 
         if (cellCount == 1) { //build style for only one image
           //@todo need implement!
-        } else if (cellCount  == 2) { //build style for 2 images
-          buildedStyle        = scope.buildCellStyle(ratio, cellCount)
-        } else { //build style for >= 3 images
+        } else { //build style for >=2 images
           buildedStyle        = scope.buildCellStyle(ratio, cellCount)
         }
 
@@ -316,12 +327,13 @@ angular.module("ngPhotoGrid")
     }
 
     return {
-      restrict:     "A",
-      templateUrl:  "photo_grid.html",
+      restrict:       "A",
+      templateUrl:    "photo_grid.html",
       scope: {
-        images:     "=images",
-        builded:    "&",
-        clicked:    "&"
+        images:       "=images",
+        builded:      "&",
+        clicked:      "&",
+        gridOptions:  "=gridOptions"
       },
       link: linker
     }
