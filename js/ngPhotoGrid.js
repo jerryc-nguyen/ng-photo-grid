@@ -63,11 +63,7 @@ angular.module("ngPhotoGrid")
           return a[scope.SORT_BY_KEY] - b[scope.SORT_BY_KEY]
         })
 
-        if(sortedImages.length < scope.MAX_LENGTH) {
-          return sortedImages
-        } else {
-          return sortedImages.slice(0, scope.MAX_LENGTH)
-        }
+        return sortedImages.slice(0, scope.MAX_LENGTH)
       }
 
       scope.randomNumber = function(max) {
@@ -287,43 +283,33 @@ angular.module("ngPhotoGrid")
           buildedStyle        = scope.buildCellStyle(ratio, cellCount)
         }
 
-        bigCellStyle          = buildedStyle.big;
-        smallCellStyle        = buildedStyle.small;
-        lastCellStyle         = buildedStyle.last;
-        options               = buildedStyle.options;
-
         // remove margin right of last small cell in the bottom
-        if(smallCellStyle.marginRight) {
-          lastCellStyle.marginRight     = 0
-          lastCellStyle.width           = smallCellStyle.width + scope.MARGIN;
+        if(buildedStyle.small.marginRight) {
+          buildedStyle.last.marginRight     = 0
+          buildedStyle.last.width           = buildedStyle.small.width + scope.MARGIN;
         }
 
         // remove margin bottom of last small cell in the right
-        if(smallCellStyle.marginBottom) {
-          lastCellStyle.marginBottom    = 0
-          lastCellStyle.height          = smallCellStyle.height + scope.MARGIN;
+        if(buildedStyle.small.marginBottom) {
+          buildedStyle.last.marginBottom    = 0
+          buildedStyle.last.height          = buildedStyle.small.height + scope.MARGIN;
         }
 
         // add suffix px for margin and size for ng-style working
         attrs = ["width", "height", "marginRight", "marginLeft", "marginBottom"]
         angular.forEach(attrs, function(attr, index) {
-          if(bigCellStyle[attr]) {
-            bigCellStyle[attr]         += "px"
+          if(buildedStyle.big[attr]) {
+            buildedStyle.big[attr]         += "px"
           }
-          if(smallCellStyle[attr]) {
-            smallCellStyle[attr]       += "px"
+          if(buildedStyle.small[attr]) {
+            buildedStyle.small[attr]       += "px"
           }
-          if(lastCellStyle[attr]) {
-            lastCellStyle[attr]        += "px"
+          if(buildedStyle.last[attr]) {
+            buildedStyle.last[attr]        += "px"
           }
         })
 
-        return {
-          big:      bigCellStyle,
-          small:    smallCellStyle,
-          last:     lastCellStyle,
-          options:  options
-        }
+        return buildedStyle;
       }
 
       //functions call when init
