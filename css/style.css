@@ -12,7 +12,7 @@
 }
 .wrapper {
   margin:0 auto;
-  width: 500px;   /*  you can set width values to any grid's ancestor,
+  width: 250px;   /*  you can set width values to any grid's ancestor,
                       it was used to define photo grid's wrap width when init,
                       otherwise default value would be taken in directive*/
 }

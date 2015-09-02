@@ -18,27 +18,30 @@ angular.module("ngPhotoGrid")
                                     onClicked     :     function() {},
                                     onBuilded     :     function() {},
                                     margin        :     2,
-                                    maxLength     :     7
+                                    maxLength     :     7,
+                                    isSameHeight  : true
                                   }
 
       angular.extend(scope.defaultOptions, scope.gridOptions);
 
-      scope.URL_KEY             = scope.defaultOptions.urlKey;
-      scope.SORT_BY_KEY         = scope.defaultOptions.sortByKey;
-      scope.GRID_WIDTH          = element.prop('offsetWidth');
-      scope.MARGIN              = scope.defaultOptions.margin;
-      scope.MAX_LENGTH          = scope.defaultOptions.maxLength;
+      var IS_SAME_HEIGHT  = scope.defaultOptions.isSameHeight
+      var URL_KEY      = scope.defaultOptions.urlKey;
+      var SORT_BY_KEY  = scope.defaultOptions.sortByKey;
+      var GRID_WIDTH   = element.prop('offsetWidth');
+      var MARGIN       = scope.defaultOptions.margin;
+      var MAX_LENGTH   = scope.defaultOptions.maxLength;
 
-      if (!scope.GRID_WIDTH || scope.GRID_WIDTH < 320) { // set the default width of parent
-        scope.GRID_WIDTH       = 320
+      if (!GRID_WIDTH) { // set the default width of parent
+        GRID_WIDTH = 250
       }
-      scope.parentStyle         = { width: scope.GRID_WIDTH + "px", overflow: "hidden" }
-      scope.commonStyle         = {
-                                    display:        'block',
-                                    overflow:       'hidden',
-                                    cssFloat:       'left',
-                                    cursor:         'pointer'
-                                  };
+
+      scope.parentStyle = { width: GRID_WIDTH + "px", overflow: "hidden" }
+      commonStyle       = {
+                            display:        'block',
+                            overflow:       'hidden',
+                            cssFloat:       'left',
+                            cursor:         'pointer'
+                          };
 
       //callback handler
       scope.cellClicked = function(image) {
@@ -54,14 +57,14 @@ angular.module("ngPhotoGrid")
           var randNumber; //set the id and nth value for image if does not have
           randNumber                = scope.randomNumber();
           image.id                  = image.id || randNumber;
-          image[scope.SORT_BY_KEY]  = image[scope.SORT_BY_KEY] || randNumber;
+          image[SORT_BY_KEY]  = image[SORT_BY_KEY] || randNumber;
         });
 
         sortedImages = scope.images.sort(function(a, b) {
-          return a[scope.SORT_BY_KEY] - b[scope.SORT_BY_KEY]
+          return a[SORT_BY_KEY] - b[SORT_BY_KEY]
         })
 
-        return sortedImages.slice(0, scope.MAX_LENGTH)
+        return sortedImages.slice(0, MAX_LENGTH)
       }
 
       scope.randomNumber = function(max) {
@@ -76,7 +79,7 @@ angular.module("ngPhotoGrid")
           var img;
           img                     = new Image();
           img.id                  = image.id ;
-          img[scope.SORT_BY_KEY]  = image[scope.SORT_BY_KEY];
+          img[SORT_BY_KEY]  = image[SORT_BY_KEY];
 
           img.onload              = function(loadedImage) {
             scope.loadedTakenImages.push(loadedImage);
@@ -100,7 +103,7 @@ angular.module("ngPhotoGrid")
             }
           };
 
-          img.src                 = image[scope.URL_KEY];
+          img.src                 = image[URL_KEY];
         });
       };
 
@@ -140,7 +143,7 @@ angular.module("ngPhotoGrid")
               imageStyle.marginLeft = "-" + marginLeft + "px";
             }
           } else if (index == 0 && curRatio >= 1
-                    && (image.naturalWidth < bigCellWidth || image.naturalWidth < scope.GRID_WIDTH)) {
+                    && (image.naturalWidth < bigCellWidth || image.naturalWidth < GRID_WIDTH)) {
 
             //if the natural width of image were too small, we would scale it up to parent's wrap
             imageStyle.width  = "100%";
@@ -161,12 +164,12 @@ angular.module("ngPhotoGrid")
               bigCellStyle.top    = "0";
               image.cellStyle     = bigCellStyle;
             } else if (index  == 1) {
-              bigCellStyle.top    = bigCellHeight + scope.MARGIN + "px";
+              bigCellStyle.top    = bigCellHeight + MARGIN + "px";
               image.cellStyle     = bigCellStyle;
             } else {
               var margin, smallCellIndex;
               smallCellIndex      = index - 2;
-              margin              = smallCellIndex == 0 ? 0 : scope.MARGIN;
+              margin              = smallCellIndex == 0 ? 0 : MARGIN;
               smallCellStyle.top  = smallCellIndex * smallCellHeight + (margin * smallCellIndex) + "px"
               image.cellStyle     = smallCellStyle
             }
@@ -205,7 +208,7 @@ angular.module("ngPhotoGrid")
 
         // apply the binding, display the grid in view
         scope.loadedImages      = scope.takenImages;
-        scope.$apply()
+       
       }
 
       /**
@@ -224,25 +227,25 @@ angular.module("ngPhotoGrid")
         else
           secondRatio           = 1.5 //fail all cases below
 
-        bigCellStyle            = angular.copy(scope.commonStyle);
-        smallCellStyle          = angular.copy(scope.commonStyle);
-        lastCellStyle           = angular.copy(scope.commonStyle);
+        bigCellStyle            = angular.copy(commonStyle);
+        smallCellStyle          = angular.copy(commonStyle);
+        lastCellStyle           = angular.copy(commonStyle);
         WIDTH_RATE              = scope.getWidthRate(firstRatio, cellCount);
         case2BigImage1          = firstRatio  > 0.8 && firstRatio  < 1.2 &&
                                   secondRatio > 0.8 && secondRatio < 1.2
         case2BigImage2          = firstRatio >= 2 && secondRatio >= 2
 
         if(cellCount == 2) { //build style for grid has 2 images and first image has firstRatio > 1
-          var marginSize              = scope.MARGIN / cellCount;
+          var marginSize              = MARGIN / cellCount;
           bigCellStyle.marginRight    = marginSize;
           smallCellStyle.marginLeft   = marginSize;
 
-          bigCellWidth          = Math.floor(scope.GRID_WIDTH * WIDTH_RATE) - scope.MARGIN;
+          bigCellWidth          = Math.floor(GRID_WIDTH * WIDTH_RATE) - MARGIN;
           bigCellStyle.width    = bigCellWidth;
           bigCellStyle.height   = bigCellWidth / firstRatio;
 
           smallCellCount        = cellCount - 1;
-          smallCellWidth        = scope.GRID_WIDTH - bigCellWidth - scope.MARGIN;
+          smallCellWidth        = GRID_WIDTH - bigCellWidth - MARGIN;
           smallCellHeight       = bigCellWidth / firstRatio;
           smallCellStyle.width  = smallCellWidth;
           smallCellStyle.height = smallCellHeight;
@@ -259,69 +262,76 @@ angular.module("ngPhotoGrid")
           //determine the height of the big cell
           //height == width / 2 if the grid in case2BigImage1
           if(case2BigImage1) {
-            bigCellHeight = scope.GRID_WIDTH / 2
+            bigCellHeight = GRID_WIDTH / 2
           } else {
-            bigCellHeight  = WIDTH_RATE * scope.GRID_WIDTH / firstRatio
+            bigCellHeight  = WIDTH_RATE * GRID_WIDTH / firstRatio
           }
 
-          GRID_HEIGHT               = bigCellHeight * 2 + scope.MARGIN; //margin bottom the first big image
+          GRID_HEIGHT               = bigCellHeight * 2 + MARGIN; //margin bottom the first big image
           scope.parentStyle.height  = GRID_HEIGHT + "px";
 
-          bigCellWidth              = scope.GRID_WIDTH * WIDTH_RATE - scope.MARGIN;
+          bigCellWidth              = GRID_WIDTH * WIDTH_RATE - MARGIN;
           bigCellStyle.width        = bigCellWidth;
           bigCellStyle.height       = bigCellHeight;
           bigCellStyle.left         = 0;
 
-          smallCellWidth            = smallCellWidth        = scope.GRID_WIDTH - bigCellWidth;
-          smallCellHeight           = (GRID_HEIGHT / (cellCount - 2)) - scope.MARGIN;
+          smallCellWidth            = smallCellWidth        = GRID_WIDTH - bigCellWidth;
+          smallCellHeight           = (GRID_HEIGHT / (cellCount - 2)) - MARGIN;
           smallCellStyle.width      = smallCellWidth;
           smallCellStyle.height     = smallCellHeight;
-          smallCellStyle.right      = (-1) * scope.MARGIN;
+          smallCellStyle.right      = (-1) * MARGIN;
 
           is2First                  = true; //flag this style is has 2 big image style
 
         } else if(firstRatio > 1) { //build style for grid more than 2 images and first image has firstRatio > 1
-          bigCellStyle.marginBottom    = scope.MARGIN;
-          smallCellStyle.marginRight   = scope.MARGIN;
-
-          bigCellStyle.width    = scope.GRID_WIDTH;
-          bigCellStyle.height   = scope.GRID_WIDTH / firstRatio;
+          bigCellStyle.marginBottom  = MARGIN;
+          smallCellStyle.marginRight = MARGIN;
 
           smallCellCount        = cellCount - 1;
-          smallCellWidth        = ( scope.GRID_WIDTH - smallCellCount*scope.MARGIN ) / smallCellCount;
+          smallCellWidth        = ( GRID_WIDTH - smallCellCount * MARGIN ) / smallCellCount;
           smallCellStyle.width  = smallCellWidth;
-
-          // determine the height of smallCell below
-          if (firstRatio > 1.3 && firstRatio < 1.5) { // 4:3 < firstRatio < 5:3
-            smallCellHeight     = smallCellWidth / firstRatio;
-          } else if (firstRatio > 1.5) {
-            smallCellHeight     = smallCellWidth / 1.5
+          
+          if(IS_SAME_HEIGHT) {
+            bigCellStyle.height   = GRID_WIDTH * 2 / 3;
+            bigCellStyle.width    = bigCellStyle.height * firstRatio;
+            smallCellStyle.height = GRID_WIDTH * 1 / 3 - MARGIN;
+            lastCellStyle.height  = smallCellStyle.height
           } else {
-            smallCellHeight     = smallCellWidth;
+            bigCellStyle.width    = GRID_WIDTH;
+            bigCellStyle.height   = GRID_WIDTH / firstRatio;
+            smallCellWidth        = ( GRID_WIDTH - smallCellCount * MARGIN ) / smallCellCount;
+            
+            // determine the height of smallCell below
+            if (firstRatio > 1.3 && firstRatio < 1.5) { // 4:3 < firstRatio < 5:3
+              smallCellHeight     = smallCellWidth / firstRatio;
+            } else if (firstRatio > 1.5) {
+              smallCellHeight     = smallCellWidth / 1.5
+            } else {
+              smallCellHeight     = smallCellWidth;
+            }
+            smallCellStyle.height = smallCellHeight;
           }
-
-          smallCellStyle.height = smallCellHeight;
-          lastCellStyle.height  = smallCellHeight;
-
+          
         } else { //build style for grid more than 2 images and first image has firstRatio <= 1
-          bigCellStyle.marginRight       = scope.MARGIN;
-          smallCellStyle.marginBottom    = scope.MARGIN;
+          bigCellStyle.marginRight       = MARGIN;
+          smallCellStyle.marginBottom    = MARGIN;
 
-          bigCellWidth          = Math.floor(scope.GRID_WIDTH * WIDTH_RATE) ;
+          bigCellWidth          = Math.floor(GRID_WIDTH * WIDTH_RATE) ;
           bigCellHeight         = bigCellWidth / firstRatio;
 
           bigCellStyle.width    = bigCellWidth;
           bigCellStyle.height   = bigCellHeight;
 
           smallCellCount        = cellCount - 1;
-          smallCellWidth        = scope.GRID_WIDTH - bigCellWidth - scope.MARGIN;
-          smallCellHeight       = bigCellHeight / smallCellCount - scope.MARGIN
+          smallCellWidth        = GRID_WIDTH - bigCellWidth - MARGIN;
+          smallCellHeight       = bigCellHeight / smallCellCount - MARGIN
 
           smallCellStyle.width  = smallCellWidth;
           smallCellStyle.height = smallCellHeight
           lastCellStyle.width   = smallCellWidth
         }
 
+        console.log("bigCellStyle", bigCellStyle)
         return {
           big:    bigCellStyle,
           small:  smallCellStyle,
@@ -374,13 +384,13 @@ angular.module("ngPhotoGrid")
         // remove margin right of last small cell in the bottom
         if(buildedStyle.small.marginRight) {
           buildedStyle.last.marginRight     = 0
-          buildedStyle.last.width           = buildedStyle.small.width + scope.MARGIN;
+          buildedStyle.last.width           = buildedStyle.small.width + MARGIN;
         }
 
         // remove margin bottom of last small cell in the right
         if(buildedStyle.small.marginBottom) {
           buildedStyle.last.marginBottom    = 0
-          buildedStyle.last.height          = buildedStyle.small.height + scope.MARGIN;
+          buildedStyle.last.height          = buildedStyle.small.height + MARGIN;
         }
 
         // add suffix px for margin and size for ng-style working
