@@ -3,33 +3,31 @@ angular.module("ngPhotoGrid")
   .directive("ngPhotoGrid", ["$templateCache", function($templateCache){
 
     $templateCache.put("photo_grid.html",
-      "<div class='photo-grid-wrapper' ng-style = 'parentStyle'><a href='#' class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)'><img class='grid-cell-image' ng-style='image.imageStyle' ng-src='{{image.original_url}}' alt='#'/></a></div>");
+      "<div class='photo-grid-wrapper' ng-style = 'parentStyle'><span class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)'><img class='grid-cell-image' ng-src='{{image.original_url}}' alt='#'/></span></div>");
 
     function linker(scope, element, attrs) {
 
-      scope.loadedImages        = [];
-      scope.loadedTakenImages   = [];
-      scope.takenImages         = [];
+      scope.loadedImages   = [];
+      loadedTakenImages    = [];
+      takenImages          = [];
 
       // ###OPTIONS
-      scope.defaultOptions      = {
-                                    urlKey        :     "original_url",
-                                    sortByKey     :     "nth",
-                                    onClicked     :     function() {},
-                                    onBuilded     :     function() {},
-                                    margin        :     2,
-                                    maxLength     :     7,
-                                    isSameHeight  : true
-                                  }
+      scope.defaultOptions =  {
+                                urlKey          :     "original_url",
+                                sortByKey       :     "nth",
+                                onClicked       :     function() {},
+                                onBuilded       :     function() {},
+                                margin          :     2,
+                                maxLength       :     7,
+                                isSquare        :     false,
+                                buildOnLoading  :     true
+                              }
 
       angular.extend(scope.defaultOptions, scope.gridOptions);
 
-      var IS_SAME_HEIGHT  = scope.defaultOptions.isSameHeight
-      var URL_KEY      = scope.defaultOptions.urlKey;
-      var SORT_BY_KEY  = scope.defaultOptions.sortByKey;
+      var IS_SQUARE    = scope.defaultOptions.isSquare;
       var GRID_WIDTH   = element.prop('offsetWidth');
       var MARGIN       = scope.defaultOptions.margin;
-      var MAX_LENGTH   = scope.defaultOptions.maxLength;
 
       if (!GRID_WIDTH) { // set the default width of parent
         GRID_WIDTH = 250
@@ -52,67 +50,70 @@ angular.module("ngPhotoGrid")
       * choose images from the url source to build grid
       * take maximum 7 images for best looking
       *------------------------------------------------*/
-      scope.chooseImages = function() {
+      chooseImages = function() {
         angular.forEach(scope.images, function(image, index) {
           var randNumber; //set the id and nth value for image if does not have
-          randNumber                = scope.randomNumber();
+          randNumber                = randomNumber();
           image.id                  = image.id || randNumber;
-          image[SORT_BY_KEY]  = image[SORT_BY_KEY] || randNumber;
+          image[scope.defaultOptions.sortByKey]  = image[scope.defaultOptions.sortByKey] || randNumber;
         });
 
         sortedImages = scope.images.sort(function(a, b) {
-          return a[SORT_BY_KEY] - b[SORT_BY_KEY]
+          return a[scope.defaultOptions.sortByKey] - b[scope.defaultOptions.sortByKey]
         })
 
-        return sortedImages.slice(0, MAX_LENGTH)
+        return sortedImages.slice(0, scope.defaultOptions.maxLength)
       }
 
-      scope.randomNumber = function(max) {
+      randomNumber = function(max) {
         max = max || 999
         return Math.floor(Math.random()*max)
       }
 
-      scope.preloadImages = function() {
-        scope.takenImages = scope.chooseImages()
+      preloadImages = function() {
+        takenImages = chooseImages()
 
-        angular.forEach(scope.takenImages, function(image, index) {
+        angular.forEach(takenImages, function(image, index) {
           var img;
           img                     = new Image();
           img.id                  = image.id ;
-          img[SORT_BY_KEY]  = image[SORT_BY_KEY];
+          img[scope.defaultOptions.sortByKey]  = image[scope.defaultOptions.sortByKey];
 
           img.onload              = function(loadedImage) {
-            scope.loadedTakenImages.push(loadedImage);
+            loadedTakenImages.push(loadedImage);
 
             // store the original dimesion of image
             image.naturalWidth    = loadedImage.target.naturalWidth
             image.naturalHeight   = loadedImage.target.naturalHeight
 
             // build the grid immediatly after the image was loaded
-            // image was shown and grid was built while image loading
-            // @todo make this configurable
-            scope.buildPhotoGrid();
-
-            if(scope.loadedTakenImages.length == scope.takenImages.length) {
+            // building while images loading
+            if(scope.defaultOptions.buildOnLoading) {
+              buildPhotoGrid();
+            }
+            
+            if(loadedTakenImages.length == takenImages.length) {
               //trigger build completed handler
               scope.defaultOptions.onBuilded()
 
               //grid also can be build after all image loaded
               //all image would be shown correctly, loading time cause poor UX
-              //scope.buildPhotoGrid()
+              if(!scope.defaultOptions.buildOnLoading) {
+                buildPhotoGrid()
+              }
             }
           };
 
-          img.src                 = image[URL_KEY];
+          img.src = image[scope.defaultOptions.urlKey];
         });
       };
 
-      scope.buildPhotoGrid = function() {
+      buildPhotoGrid = function() {
         var firstImage, imageStyle, smallCellHeight,
         smallCellWidth, firstRatio, bigCellWidth, cellCount, is2first;
 
         // get cell style & builded options
-        styles          = scope.getCellStyles();
+        styles          = getCellStyles();
         smallCellHeight = styles.options.smallCellHeight;
         smallCellWidth  = styles.options.smallCellWidth;
         firstRatio      = styles.options.firstRatio;
@@ -121,7 +122,7 @@ angular.module("ngPhotoGrid")
         cellCount       = styles.options.cellCount;
         is2First        = styles.options.is2First;
 
-        angular.forEach(scope.takenImages, function(image, index) {
+        angular.forEach(takenImages, function(image, index) {
           var curHeight, curRatio, imageStyle;
           curRatio      = (image.naturalWidth / image.naturalHeight);
           curHeight     = smallCellWidth / curRatio;
@@ -131,30 +132,30 @@ angular.module("ngPhotoGrid")
           var marginTop, imageStyle;
 
           // only positioning the small cell
-          if(index != 0) {
-            if(curHeight > smallCellHeight) { //when height > smallCellHeight
-              marginTop             = (curHeight - smallCellHeight) / 2;
-              imageStyle.marginTop  = "-" + marginTop + "px";
-            } else {
-              // scale up the image when the curHeight = smallCellHeight
-              imageStyle.height     = smallCellHeight + "px";
-              imageStyle.width      = smallCellHeight * curRatio + "px"
-              marginLeft            = (smallCellHeight * curRatio - smallCellWidth) / 2
-              imageStyle.marginLeft = "-" + marginLeft + "px";
-            }
-          } else if (index == 0 && curRatio >= 1
-                    && (image.naturalWidth < bigCellWidth || image.naturalWidth < GRID_WIDTH)) {
+          // if(index != 0) {
+          //   if(curHeight > smallCellHeight) { //when height > smallCellHeight
+          //     marginTop             = (curHeight - smallCellHeight) / 2;
+          //     imageStyle.marginTop  = "-" + marginTop + "px";
+          //   } else {
+          //     // scale up the image when the curHeight = smallCellHeight
+          //     imageStyle.height     = smallCellHeight + "px";
+          //     imageStyle.width      = smallCellHeight * curRatio + "px"
+          //     marginLeft            = (smallCellHeight * curRatio - smallCellWidth) / 2
+          //     imageStyle.marginLeft = "-" + marginLeft + "px";
+          //   }
+          // } else if (index == 0 && curRatio >= 1
+          //           && (image.naturalWidth < bigCellWidth || image.naturalWidth < GRID_WIDTH)) {
 
-            //if the natural width of image were too small, we would scale it up to parent's wrap
-            imageStyle.width  = "100%";
-          }
+          //   //if the natural width of image were too small, we would scale it up to parent's wrap
+          //   imageStyle.width  = "100%";
+          // }
 
           // set image cell has max height or max width
-          if(curHeight < smallCellHeight) {
-            imageStyle.maxHeight  = "100%";
-          } else {
-            imageStyle.maxWidth   = "100%";
-          }
+          // if(curHeight < smallCellHeight) {
+          //   imageStyle.maxHeight  = "100%";
+          // } else {
+          //   imageStyle.maxWidth   = "100%";
+          // }
 
           if (is2First) { //case the grid has 2 image big first
             var bigCellStyle, smallCellStyle;
@@ -175,40 +176,37 @@ angular.module("ngPhotoGrid")
             }
 
             //override image style to fit this case.
-            if (curRatio > 0.8 && curRatio < 1.2) {
-              imageStyle.width      = "auto";
-              imageStyle.maxHeight  = "100%";
-              imageStyle.maxWidth   = "auto";
-              imageStyle.marginTop  = "0px";
-            } else if(curRatio >= 2) {
-              if (index < 2) {
-                imageStyle.width      = "100%";
-                imageStyle.height     = "auto";
-                imageStyle.margin     = "0";
-              } else {
-                //@todo need implement!
-              }
+            // if (curRatio > 0.8 && curRatio < 1.2) {
+            //   imageStyle.width      = "auto";
+            //   imageStyle.maxHeight  = "100%";
+            //   imageStyle.maxWidth   = "auto";
+            //   imageStyle.marginTop  = "0px";
+            // } else if(curRatio >= 2) {
+            //   if (index < 2) {
+            //     imageStyle.width      = "100%";
+            //     imageStyle.height     = "auto";
+            //     imageStyle.margin     = "0";
+            //   } else {
+            //     //@todo need implement!
+            //   }
 
-            }
+            // }
 
           } else if (index == 0) { //big cell style
-            image.cellStyle     = styles.big;
+            image.cellStyle = styles.big;
 
           } else if (index != cellCount - 1 || cellCount == 2){ //small cells
-            image.cellStyle     = styles.small;
+            image.cellStyle = styles.small;
 
           } else { //last small cell style (remove redundant margin right or bottom)
-            image.cellStyle     = styles.last;
+            image.cellStyle = styles.last;
           }
-
           //apply the style for image in cell
-          image.imageStyle        = imageStyle
-
+          image.imageStyle = imageStyle
         })
 
         // apply the binding, display the grid in view
-        scope.loadedImages      = scope.takenImages;
-       
+        scope.loadedImages = takenImages;
       }
 
       /**
@@ -217,7 +215,7 @@ angular.module("ngPhotoGrid")
       * @secondRatio  : ratio of the second image in list
       * @cellCount    : total cells in grid
       *------------------------------------------------*/
-      scope.buildCellStyle      = function (firstImage, secondImage, cellCount) {
+      buildCellStyle      = function (firstImage, secondImage, cellCount) {
         var firstRatio, secondRatio, bigCellStyle, smallCellStyle, lastCellStyle,
             WIDTH_RATE, bigCellWidth, bigCellHeight, smallCellHeight, smallCellWidth, is2First;
 
@@ -230,7 +228,7 @@ angular.module("ngPhotoGrid")
         bigCellStyle            = angular.copy(commonStyle);
         smallCellStyle          = angular.copy(commonStyle);
         lastCellStyle           = angular.copy(commonStyle);
-        WIDTH_RATE              = scope.getWidthRate(firstRatio, cellCount);
+        WIDTH_RATE              = getWidthRate(firstRatio, cellCount);
         case2BigImage1          = firstRatio  > 0.8 && firstRatio  < 1.2 &&
                                   secondRatio > 0.8 && secondRatio < 1.2
         case2BigImage2          = firstRatio >= 2 && secondRatio >= 2
@@ -249,8 +247,8 @@ angular.module("ngPhotoGrid")
           smallCellHeight       = bigCellWidth / firstRatio;
           smallCellStyle.width  = smallCellWidth;
           smallCellStyle.height = smallCellHeight;
-
         }
+
         // add style for first column contain 2 big images, only support for grid has more than 5 cells
         else if (cellCount >= 5 && (case2BigImage1 || case2BigImage2)) {
           var GRID_HEIGHT;
@@ -291,11 +289,10 @@ angular.module("ngPhotoGrid")
           smallCellWidth        = ( GRID_WIDTH - smallCellCount * MARGIN ) / smallCellCount;
           smallCellStyle.width  = smallCellWidth;
           
-          if(IS_SAME_HEIGHT) {
+          if(IS_SQUARE) {
             bigCellStyle.height   = GRID_WIDTH * 2 / 3;
             bigCellStyle.width    = bigCellStyle.height * firstRatio;
             smallCellStyle.height = GRID_WIDTH * 1 / 3 - MARGIN;
-            lastCellStyle.height  = smallCellStyle.height
           } else {
             bigCellStyle.width    = GRID_WIDTH;
             bigCellStyle.height   = GRID_WIDTH / firstRatio;
@@ -311,13 +308,18 @@ angular.module("ngPhotoGrid")
             }
             smallCellStyle.height = smallCellHeight;
           }
-          
+          lastCellStyle.height  = smallCellStyle.height
         } else { //build style for grid more than 2 images and first image has firstRatio <= 1
           bigCellStyle.marginRight       = MARGIN;
           smallCellStyle.marginBottom    = MARGIN;
 
-          bigCellWidth          = Math.floor(GRID_WIDTH * WIDTH_RATE) ;
-          bigCellHeight         = bigCellWidth / firstRatio;
+          if (IS_SQUARE) {
+            bigCellHeight   = GRID_WIDTH
+            bigCellWidth    = GRID_WIDTH * WIDTH_RATE
+          } else {
+            bigCellWidth    = Math.floor(GRID_WIDTH * WIDTH_RATE) ;
+            bigCellHeight   = bigCellWidth / firstRatio;
+          }
 
           bigCellStyle.width    = bigCellWidth;
           bigCellStyle.height   = bigCellHeight;
@@ -348,7 +350,7 @@ angular.module("ngPhotoGrid")
         }
       }
 
-      scope.getWidthRate      = function(firstRatio, cellCount) {
+      getWidthRate      = function(firstRatio, cellCount) {
         if (cellCount == 2) { //build style for 2 images
           if(firstRatio > 1) {
             return 2/3;
@@ -357,26 +359,24 @@ angular.module("ngPhotoGrid")
           }
         } else if(firstRatio > 1) { //build style for >= 3 images, first image has firstRatio > 1
           return 1
-        } else if (firstRatio < 1) { //build style for >= 3 images, first image has firstRatio < 1
+        } else { //build style for >= 3 images, first image has firstRatio < 1
           return 2/3
-        } else { //build style for >= 3 images, first image has firstRatio == 1
-          return 3/4
         }
       }
 
-      scope.getCellStyles     = function() {
+      getCellStyles     = function() {
         var margin, firstImage, secondImage, cellCount, bigCellStyle,
             smallCellStyle, smallCellCount, firstRatio, secondRatio, smallCellWidth, smallCellHeight,
             bigCellWidth, WIDTH_RATE, buildedStyle;
 
-        firstImage            = scope.takenImages[0];
-        secondImage           = scope.takenImages[1];
-        cellCount             = scope.takenImages.length;
+        firstImage            = takenImages[0];
+        secondImage           = takenImages[1];
+        cellCount             = takenImages.length;
 
         if (cellCount == 1) { //build style for only one image
           //@todo need implement!
         } else { //build style for >=2 images
-          buildedStyle        = scope.buildCellStyle(firstImage, secondImage, cellCount)
+          buildedStyle        = buildCellStyle(firstImage, secondImage, cellCount)
         }
 
         console.log("buildedStyle", buildedStyle)
@@ -411,7 +411,7 @@ angular.module("ngPhotoGrid")
       }
 
       //functions call when init
-      scope.preloadImages();
+      preloadImages();
     }
 
     return {
