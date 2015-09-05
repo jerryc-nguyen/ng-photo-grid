@@ -132,9 +132,11 @@ angular.module("ngPhotoGrid")
             if (index == 0) {
               bigCellStyle.top    = "0";
               image.cellStyle     = bigCellStyle;
+              image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
             } else if (index  == 1) {
               bigCellStyle.top    = bigCellHeight + MARGIN + "px";
               image.cellStyle     = bigCellStyle;
+              image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
             } else {
               var margin, smallCellIndex;
               smallCellIndex      = index - 2;
@@ -142,7 +144,6 @@ angular.module("ngPhotoGrid")
               smallCellStyle.top  = smallCellIndex * smallCellHeight + (margin * smallCellIndex) + "px"
               image.cellStyle     = smallCellStyle
             }
-            image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
           } else if (index == 0) { //big cell style
             image.cellStyle = styles.big;
             image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
@@ -192,7 +193,7 @@ angular.module("ngPhotoGrid")
           return { maxHeight: "100%", position: "relative", left: left + "px"}
         }
       }
-
+          
       function getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio) {
         curImageHeight = cellHeight;
         curImageWidth = Math.round(curImageHeight  * imgRatio);
@@ -201,7 +202,7 @@ angular.module("ngPhotoGrid")
           return { maxWidth: "100%", position: "relative", top: top + "px"}
         } else {
           var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
-          return { maxHeight: "100%", position: "relative", left: left + "px" }
+          return { maxWidth: "100%", minHeight: "100%"} //!this is workaround for 2first
         }
       }
       /**
@@ -370,9 +371,7 @@ angular.module("ngPhotoGrid")
         } else { //build style for >=2 images
           buildedStyle        = buildCellStyle(firstImage, secondImage, cellCount)
         }
-
-        console.log("buildedStyle", buildedStyle)
-
+        
         // remove margin right of last small cell in the bottom
         if(buildedStyle.small.marginRight) {
           buildedStyle.last.marginRight     = 0
