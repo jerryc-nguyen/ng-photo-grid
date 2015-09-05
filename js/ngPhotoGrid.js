@@ -1,3 +1,8 @@
+/**
+ * Author: Nhan Nguyen
+ * https://github.com/jerryc-nguyen/ng-photo-grid
+ * MIT License
+ */
 angular.module("ngPhotoGrid", [])
 angular.module("ngPhotoGrid")
   .directive("ngPhotoGrid", ["$templateCache", "$timeout", function($templateCache, $timeout){
