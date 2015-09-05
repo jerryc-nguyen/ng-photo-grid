@@ -1,5 +1,5 @@
 /**
- * Author: Nhan Nguyen
+ * Author: Nhan Nguyen <jerryc.nguyen92@gmail.com>
  * https://github.com/jerryc-nguyen/ng-photo-grid
  * MIT License
  */
@@ -407,7 +407,10 @@ angular.module("ngPhotoGrid")
       }
 
       //functions call when init
-      preloadImages();
+      scope.$watch("images", function() {
+        preloadImages();
+      })
+      
     }
 
     return {
