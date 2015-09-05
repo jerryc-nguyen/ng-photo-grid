@@ -142,7 +142,7 @@ angular.module("ngPhotoGrid")
               smallCellStyle.top  = smallCellIndex * smallCellHeight + (margin * smallCellIndex) + "px"
               image.cellStyle     = smallCellStyle
             }
-            image.imageStyle = buildCellImageStyle(bigCellWidth, bigCellHeight, image)
+            image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
           } else if (index == 0) { //big cell style
             image.cellStyle = styles.big;
             image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
@@ -185,9 +185,11 @@ angular.module("ngPhotoGrid")
         curImageWidth = cellWidth;
         curImageHeight = Math.round(curImageWidth  / imgRatio);
         if(curImageHeight >= cellHeight) {
-          return { maxWidth: "100%"}
+          var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
+          return { maxWidth: "100%", position: "relative", top: top + "px"}
         } else {
-          return { maxHeight: "100%"}
+          var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
+          return { maxHeight: "100%", position: "relative", left: left + "px"}
         }
       }
 
@@ -195,9 +197,11 @@ angular.module("ngPhotoGrid")
         curImageHeight = cellHeight;
         curImageWidth = Math.round(curImageHeight  * imgRatio);
         if(curImageWidth <= cellWidth) {
-          return { maxWidth: "100%"}
+          var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
+          return { maxWidth: "100%", position: "relative", top: top + "px"}
         } else {
-          return { maxHeight: "100%"}
+          var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
+          return { maxHeight: "100%", position: "relative", left: left + "px" }
         }
       }
       /**
