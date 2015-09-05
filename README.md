@@ -1,7 +1,13 @@
 # ng-photo-grid
 photo grid like facebook in angular js with no dependencies.
 
-### [Demo page](http://jerryc-nguyen.github.io/ng-photo-grid/)
+# [Examples page](http://jerryc-nguyen.github.io/ng-photo-grid/)
+
+![angular facebook photo grid with default config](http://jerryc-nguyen.github.io/ng-photo-grid/demo-images/default.png)
+
+![angular facebook photo grid with 2 bigs image first](http://jerryc-nguyen.github.io/ng-photo-grid/demo-images/2bigs.png)
+
+![angular facebook photo grid with square config](http://jerryc-nguyen.github.io/ng-photo-grid/demo-images/square.png)
 
 
 Directive can be used with these options:
