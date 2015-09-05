@@ -5,14 +5,14 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
   $scope.isBuildingGrid = true;
 
   // production test
-  // img1 = {original_url: "http://lorempixel.com/1366/768"};
-  // img2 = {original_url: "http://lorempixel.com/316/316"};
-  // img3 = {original_url: "http://lorempixel.com/400/200"};
-  // img4 = {original_url: "http://lorempixel.com/600/1000"};
-  // img5 = {original_url: "http://lorempixel.com/600/800"};
-  // img6 = {original_url: "http://lorempixel.com/800/600"};
-  // img7 = {original_url: "http://lorempixel.com/800/800"};
-  // img8 = {original_url: "http://lorempixel.com/900/1000"};
+  img11 = {original_url: "http://lorempixel.com/1366/768"};
+  img22 = {original_url: "http://lorempixel.com/316/316"};
+  img33 = {original_url: "http://lorempixel.com/400/200"};
+  img44 = {original_url: "http://lorempixel.com/600/1000"};
+  img55 = {original_url: "http://lorempixel.com/600/800"};
+  img66 = {original_url: "http://lorempixel.com/800/600"};
+  img77 = {original_url: "http://lorempixel.com/800/800"};
+  img88 = {original_url: "http://lorempixel.com/900/1000"};
 
   // local dev
   img1 = {original_url: "images/1366x768.jpg"};
@@ -25,6 +25,8 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
   img8 = {original_url: "images/900x1000.jpg"};
 
   var sources             = [img1, img2, img3, img4, img5, img6, img7, img8]
+
+  var sources2big            = [{original_url: "images/316x316.jpg", nth: 1}, {original_url: "images/800x800.jpg", nth: 2}, img3, img4, img5, img6]
 
   $scope.rand             = function(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -63,6 +65,8 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
 
   $scope.images              = sources.slice(0, 7);
 
+  $scope.images2big          = sources2big.slice(0, 7);
+
   /**
    * Options definitions
    *----------------------*/
@@ -78,7 +82,26 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
                         $scope.$apply()
                       },
     margin      :     2,
-    maxLength   :     3
+    maxLength   :     5
   }
 
+  /**
+   * Options definitions for square example
+   *----------------------------------------*/
+  $scope.gridOptionsSquare = {
+    urlKey      :     "original_url",
+    sortKey     :     "nth",
+    onClicked   :     function(image) {
+                        alert(JSON.stringify(image))
+                      },
+    onBuilded   :     function() {
+                        console.log ("built completed!")
+                        $scope.isBuildingGrid = false;
+                        $scope.$apply()
+                      },
+    margin      :     2,
+    isSquare    :     true,
+    maxLength   :     4
+  }
+  
 }])

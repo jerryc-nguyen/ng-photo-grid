@@ -43,7 +43,7 @@ This directive used to built the grid of images (let's look at the demo source c
     ```javascript
     <div ng-photo-grid="" images="images" grid-options="gridOptions"></div>
     ```
-####4. Open browser, if your images was random display, you can refresh (F5) browser again to see how the grid was built for others dimension like the example.
+####4. Open browser, if your images were random, you can refresh (F5) browser again to see others style of grid was built.
 
 #MIT License
 
