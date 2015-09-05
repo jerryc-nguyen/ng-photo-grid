@@ -3,7 +3,7 @@ angular.module("ngPhotoGrid")
   .directive("ngPhotoGrid", ["$templateCache", function($templateCache){
 
     $templateCache.put("photo_grid.html",
-      "<div class='photo-grid-wrapper' ng-style = 'parentStyle'><span class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)'><img class='grid-cell-image {{image.cellClass}}' ng-src='{{image.original_url}}' alt='#'/></span></div>");
+      "<div class='photo-grid-wrapper' ng-style = 'parentStyle'><span class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)'><img class='grid-cell-image' ng-style = 'image.imageStyle' ng-src='{{image.original_url}}' alt='#'/></span></div>");
 
     function linker(scope, element, attrs) {
 
@@ -111,13 +111,12 @@ angular.module("ngPhotoGrid")
 
       buildPhotoGrid = function() {
         var firstImage, imageStyle, smallCellHeight,
-        smallCellWidth, firstRatio, bigCellWidth, cellCount, is2first;
+        smallCellWidth, bigCellWidth, cellCount, is2first;
 
         // get cell style & builded options
         styles          = getCellStyles();
         smallCellHeight = styles.options.smallCellHeight;
         smallCellWidth  = styles.options.smallCellWidth;
-        firstRatio      = styles.options.firstRatio;
         bigCellWidth    = styles.options.bigCellWidth;
         bigCellHeight   = styles.options.bigCellHeight;
         cellCount       = styles.options.cellCount;
@@ -141,15 +140,15 @@ angular.module("ngPhotoGrid")
               smallCellStyle.top  = smallCellIndex * smallCellHeight + (margin * smallCellIndex) + "px"
               image.cellStyle     = smallCellStyle
             }
-            image.cellClass = getCellClass("two-big-first", styles.options, image)
+            image.imageStyle = buildCellImageStyle(bigCellWidth, bigCellHeight, image)
           } else if (index == 0) { //big cell style
             image.cellStyle = styles.big;
-            image.cellClass = getCellClass("one-big-first", styles.options, image)
+            image.imageStyle = getImageStyle(bigCellWidth, bigCellHeight, image)
           } else if (index != cellCount - 1 || cellCount == 2){ //small cells
             image.cellStyle = styles.small;
-            image.cellClass = getCellClass("others", styles.options, image)
+            image.imageStyle = getImageStyle(smallCellWidth, smallCellHeight, image)
           } else { //last small cell style (remove redundant margin right or bottom)
-            image.cellClass = getCellClass("others", styles.options, image)
+            image.imageStyle = getImageStyle(smallCellWidth, smallCellHeight, image)
             image.cellStyle = styles.last;
           }
         })
@@ -158,21 +157,7 @@ angular.module("ngPhotoGrid")
         scope.loadedImages = takenImages;
       }
 
-      function getCellClass(cellType, styleOptions, image) {
-        console.log("cellType", cellType)
-        switch(cellType) {
-          case "two-big-first":
-            return "two-big-cells " + buildCellClass(styles.options.bigCellWidth, styles.options.bigCellHeight, image)
-            break;
-          case "one-big-first":
-            return "one-big-cell " + buildCellClass(styles.options.bigCellWidth, styles.options.bigCellHeight, image)
-            break;
-          default:
-            return "small-cell " + buildCellClass(styles.options.smallCellWidth, styles.options.smallCellHeight, image)
-        }
-      }
-
-      function buildCellClass(cellWidth, cellHeight, image) {
+      function getImageStyle(cellWidth, cellHeight, image) {
         cellWidth = Math.round(cellWidth);
         cellHeight = Math.round(cellHeight);
 
@@ -181,11 +166,14 @@ angular.module("ngPhotoGrid")
         imageHeight = image.naturalHeight;
 
         if(cellWidth > imageWidth && cellHeight > imageHeight) {
-          return "img-width-cover check-1"
+          console.log("img-width-cover check-1")
+          return { maxWidth: "100%", width: "100%"}
         } else if(cellWidth > imageWidth) {
-          return "img-width-cover check-2"
+          console.log("img-width-cover check-2")
+          return { maxWidth: "100%", width: "100%"}
         } else if(cellHeight > imageHeight) {
-          return "img-height-cover check-3"
+          console.log("img-height-cover check-3")
+          return {minHeight: "100%"}
         } else {
           var imgRatio = imageWidth / imageHeight;
           var cellRatio = cellWidth / cellHeight;
@@ -195,33 +183,39 @@ angular.module("ngPhotoGrid")
             curImageWidth = cellWidth;
             curImageHeight = Math.round(curImageWidth  / imgRatio);
             if(curImageHeight >= cellHeight) {
-              return "wgh highc check-4"
+              console.log("wgh highc check-4")
+              return { maxWidth: "100%"}
             } else {
-              return "wgh hishc check-5"
+              console.log("wgh hishc check-5")
+              return { maxHeight: "100%"}
             }
           } else if (imgRatio < 1) {
             curImageHeight = cellHeight;
             curImageWidth = Math.round(curImageHeight  * imgRatio);
             if(curImageHeight >= cellHeight) {
               if(curImageWidth <= cellWidth) {
-                return "wsh highc wiswc check-6"
+                console.log("wsh hishc wiswc check-6")
+                return { maxWidth: "100%", maxHeight: "none" }
               } else {
-                return "wsh highc wigwc check-7"
+                console.log("wsh hishc wiswc check-7")
+                return { maxHeight: "100%", maxWidth: "none" }
               }
             } else {
               if(curImageWidth <= cellWidth) {
-                return "wsh hishc wiswc check-8"
+                console.log("wsh hishc wiswc check-8")
+                return {}
               } else {
-                return "wsh hishc wigwc check-9"
+                console.log("wsh hishc wigwc check-9")
+                return {}
               }
             }
           } else {
             curImageWidth = cellWidth;
             curImageHeight = Math.round(curImageWidth  * imgRatio);
             if(curImageHeight >= cellHeight) {
-              return "weh highc check-10"
+              return { maxWidth: "100%"}
             } else {
-              return "weh hishc check-11"
+              return { maxHeight: "100%"}
             }
           }
         }

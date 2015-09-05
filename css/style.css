@@ -2,50 +2,6 @@
 * All these styles is used to built layout and loading animation for demo page
 * It's not apart of angular module.
 */
-.img-width-height-cover {
-  max-width: 100%;
-}
-.grid-cell img.img-width-cover{
-  max-width: 100%;
-}
-.grid-cell img.img-height-cover{
-  max-height: 100%;
-}
-.wgh.hishc{
-  max-height: 100%;
-}
-.weh.highc {
-  max-width: 100%;
-}
-.wsh.hishc {
-  max-width: 100%;
-}
-.weh.hishc {
-  max-height: 100%;
-}
-.wsh.highc {
-  max-height: 100%;
-}
-.wsh.highc.wiswc {
-  max-width: 100%;
-  max-height: none;
-}
-.wsh.highc.wigwc {
-  max-height: 100%;
-  max-width: none;
-  position: relative;
-}
-.wgh.highc {
-  max-width: 100%;
-}
-.grid-cell img{
-
-}
-
-.grid-cell img.adjust-left{
-  
-}
-
 .center {
   text-align: center;
 }
@@ -77,4 +33,7 @@
   top:0;
   position: absolute;
 
+}
+.feed-photos.loading .grid-cell-image{
+  width: 100%;
 }
