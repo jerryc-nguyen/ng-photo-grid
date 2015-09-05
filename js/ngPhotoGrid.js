@@ -18,7 +18,7 @@ angular.module("ngPhotoGrid")
                                 onClicked       :     function() {},
                                 onBuilded       :     function() {},
                                 margin          :     2,
-                                maxLength       :     7,
+                                maxLength       :     5,
                                 isSquare        :     true,
                                 buildOnLoading  :     true
                               }
@@ -371,7 +371,7 @@ angular.module("ngPhotoGrid")
         } else { //build style for >=2 images
           buildedStyle        = buildCellStyle(firstImage, secondImage, cellCount)
         }
-        
+
         // remove margin right of last small cell in the bottom
         if(buildedStyle.small.marginRight) {
           buildedStyle.last.marginRight     = 0
