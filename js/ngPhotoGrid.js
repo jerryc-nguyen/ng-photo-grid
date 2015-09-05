@@ -1,6 +1,6 @@
 angular.module("ngPhotoGrid", [])
 angular.module("ngPhotoGrid")
-  .directive("ngPhotoGrid", ["$templateCache", function($templateCache){
+  .directive("ngPhotoGrid", ["$templateCache", "$timeout", function($templateCache, $timeout){
 
     $templateCache.put("photo_grid.html",
       "<div class='photo-grid-wrapper' ng-style = 'parentStyle'><span class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)'><img class='grid-cell-image' ng-style = 'image.imageStyle' ng-src='{{image.original_url}}' alt='#'/></span></div>");
@@ -90,7 +90,9 @@ angular.module("ngPhotoGrid")
             // building while images loading
             if(scope.defaultOptions.buildOnLoading) {
               buildPhotoGrid();
-              scope.$apply()
+              $timeout(function() {
+                scope.$apply()
+              }, 10)
             }
             
             if(loadedTakenImages.length == takenImages.length) {
@@ -158,35 +160,55 @@ angular.module("ngPhotoGrid")
       }
 
       function getImageStyle(cellWidth, cellHeight, image) {
+        var imageWidth, imageHeight, curImageWidth, curImageHeight;
+
         cellWidth = Math.round(cellWidth);
         cellHeight = Math.round(cellHeight);
 
-        var imageWidth, imageHeight;
         imageWidth  = image.naturalWidth;
         imageHeight = image.naturalHeight;
 
         if(cellWidth > imageWidth && cellHeight > imageHeight) {
           console.log("img-width-cover check-1")
-          return { maxWidth: "100%", width: "100%"}
+          if(imgRatio >= 1) {
+            curImageWidth = cellWidth;
+            curImageHeight = Math.round(curImageWidth  / imgRatio);
+            if(curImageHeight <= cellHeight) {
+              console.log("check-1-1")
+              return { minHeight: "100%"}
+            } else {
+              console.log("check-1-2")
+              return { width: "100%"}
+            }
+          } else {
+            curImageWidth = cellWidth;
+            curImageHeight = Math.round(curImageWidth  * imgRatio);
+            if(curImageHeight <= cellHeight) {
+              console.log("check-1-3")
+              return { minHeight: "100%"}
+            } else {
+              console.log("check-1-4")
+              return { minHeight: "100%", width: "100%"}
+            }
+          }
         } else if(cellWidth > imageWidth) {
-          console.log("img-width-cover check-2")
+          console.log("check-2")
           return { maxWidth: "100%", width: "100%"}
         } else if(cellHeight > imageHeight) {
-          console.log("img-height-cover check-3")
+          console.log("check-3")
           return {minHeight: "100%"}
         } else {
           var imgRatio = imageWidth / imageHeight;
           var cellRatio = cellWidth / cellHeight;
-          var curImageWidth, curImageHeight;
-
+          
           if(imgRatio > 1) {
             curImageWidth = cellWidth;
             curImageHeight = Math.round(curImageWidth  / imgRatio);
             if(curImageHeight >= cellHeight) {
-              console.log("wgh highc check-4")
+              console.log("check-4")
               return { maxWidth: "100%"}
             } else {
-              console.log("wgh hishc check-5")
+              console.log("check-5")
               return { maxHeight: "100%"}
             }
           } else if (imgRatio < 1) {
@@ -194,18 +216,18 @@ angular.module("ngPhotoGrid")
             curImageWidth = Math.round(curImageHeight  * imgRatio);
             if(curImageHeight >= cellHeight) {
               if(curImageWidth <= cellWidth) {
-                console.log("wsh hishc wiswc check-6")
+                console.log("check-6")
                 return { maxWidth: "100%", maxHeight: "none" }
               } else {
-                console.log("wsh hishc wiswc check-7")
+                console.log("check-7")
                 return { maxHeight: "100%", maxWidth: "none" }
               }
             } else {
               if(curImageWidth <= cellWidth) {
-                console.log("wsh hishc wiswc check-8")
+                console.log("check-8")
                 return {}
               } else {
-                console.log("wsh hishc wigwc check-9")
+                console.log("check-9")
                 return {}
               }
             }
