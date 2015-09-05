@@ -18,11 +18,11 @@ Directive can be used with these options:
 | buildOnLoading | option to trigger build grid, grid be built while images loading if it's true. Otherwise, grid will be built only one when all image loaded | boolean  | true           |
 
 This directive used to built the grid of images (let's look at the demo source code to see how the array of images look like), so you should prepare the array of image object then do like this:
-1. Inject module to your angular app:
+####1. Inject module to your angular app:
     ```javascript
     angular.module("ngApp", ["ngPhotoGrid"])
     ```
-2. On your controller, you should define the options and events handler if needed like this:
+####2. On your controller, you should define the options and events handler if needed like this:
     ```javascript
       $scope.gridOptions = {
         urlKey      :     "original_url",
@@ -39,11 +39,11 @@ This directive used to built the grid of images (let's look at the demo source c
         maxLength   :     7
       }
     ```
-3. Then call in your template:
+####3. Then call in your template:
     ```javascript
     <div ng-photo-grid="" images="images" grid-options="gridOptions"></div>
     ```
-4. Open browser, if your images was random display, you can refresh (F5) browser again to see how the grid was built for others dimension like the example.
+####4. Open browser, if your images was random display, you can refresh (F5) browser again to see how the grid was built for others dimension like the example.
 
 #MIT License
 
