@@ -160,89 +160,46 @@ angular.module("ngPhotoGrid")
       }
 
       function getImageStyle(cellWidth, cellHeight, image) {
-        var imageWidth, imageHeight, curImageWidth, curImageHeight;
+        var imageWidth, imageHeight, curImageWidth, curImageHeight, imgRatio, cellRatio;
 
-        cellWidth = Math.round(cellWidth);
+        cellWidth  = Math.round(cellWidth);
         cellHeight = Math.round(cellHeight);
-
         imageWidth  = image.naturalWidth;
         imageHeight = image.naturalHeight;
+        imgRatio  = imageWidth / imageHeight;
+        cellRatio = cellWidth / cellHeight;
 
-        if(cellWidth > imageWidth && cellHeight > imageHeight) {
-          console.log("img-width-cover check-1")
+        // when the any image's dimension greater than cell's dimension
+        if(cellWidth > imageWidth && cellHeight > imageHeight || cellWidth > imageWidth || cellHeight > imageHeight) {
+          return { minHeight: "100%", width: "100%"}
+        } else { // when the image smaller than the cell in both dimension
           if(imgRatio >= 1) {
-            curImageWidth = cellWidth;
-            curImageHeight = Math.round(curImageWidth  / imgRatio);
-            if(curImageHeight <= cellHeight) {
-              console.log("check-1-1")
-              return { minHeight: "100%"}
-            } else {
-              console.log("check-1-2")
-              return { width: "100%"}
-            }
+            return getSmallImageLandscapeStyle(cellHeight, cellWidth, imgRatio);
           } else {
-            curImageWidth = cellWidth;
-            curImageHeight = Math.round(curImageWidth  * imgRatio);
-            if(curImageHeight <= cellHeight) {
-              console.log("check-1-3")
-              return { minHeight: "100%"}
-            } else {
-              console.log("check-1-4")
-              return { minHeight: "100%", width: "100%"}
-            }
-          }
-        } else if(cellWidth > imageWidth) {
-          console.log("check-2")
-          return { maxWidth: "100%", width: "100%"}
-        } else if(cellHeight > imageHeight) {
-          console.log("check-3")
-          return {minHeight: "100%"}
-        } else {
-          var imgRatio = imageWidth / imageHeight;
-          var cellRatio = cellWidth / cellHeight;
-          
-          if(imgRatio > 1) {
-            curImageWidth = cellWidth;
-            curImageHeight = Math.round(curImageWidth  / imgRatio);
-            if(curImageHeight >= cellHeight) {
-              console.log("check-4")
-              return { maxWidth: "100%"}
-            } else {
-              console.log("check-5")
-              return { maxHeight: "100%"}
-            }
-          } else if (imgRatio < 1) {
-            curImageHeight = cellHeight;
-            curImageWidth = Math.round(curImageHeight  * imgRatio);
-            if(curImageHeight >= cellHeight) {
-              if(curImageWidth <= cellWidth) {
-                console.log("check-6")
-                return { maxWidth: "100%", maxHeight: "none" }
-              } else {
-                console.log("check-7")
-                return { maxHeight: "100%", maxWidth: "none" }
-              }
-            } else {
-              if(curImageWidth <= cellWidth) {
-                console.log("check-8")
-                return {}
-              } else {
-                console.log("check-9")
-                return {}
-              }
-            }
-          } else {
-            curImageWidth = cellWidth;
-            curImageHeight = Math.round(curImageWidth  * imgRatio);
-            if(curImageHeight >= cellHeight) {
-              return { maxWidth: "100%"}
-            } else {
-              return { maxHeight: "100%"}
-            }
+            return getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio);
           }
         }
       }
 
+      function getSmallImageLandscapeStyle(cellHeight, cellWidth, imgRatio) {
+        curImageWidth = cellWidth;
+        curImageHeight = Math.round(curImageWidth  / imgRatio);
+        if(curImageHeight >= cellHeight) {
+          return { maxWidth: "100%"}
+        } else {
+          return { maxHeight: "100%"}
+        }
+      }
+
+      function getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio) {
+        curImageHeight = cellHeight;
+        curImageWidth = Math.round(curImageHeight  * imgRatio);
+        if(curImageWidth <= cellWidth) {
+          return { maxWidth: "100%"}
+        } else {
+          return { maxHeight: "100%"}
+        }
+      }
       /**
       * build cell style for grid
       * @firstRatio   : ratio of the first image in list
