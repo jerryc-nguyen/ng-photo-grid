@@ -19,10 +19,11 @@ Directive can be used with these options:
 
 This directive used to built the grid of images (let's look at the demo source code to see how the array of images look like), so you should prepare the array of image object then do like this:
 1. Inject module to your angular app:
-    ```javascript:
+    ```javascript
     angular.module("ngApp", ["ngPhotoGrid"])
+    ```
 2. On your controller, you should define the options and events handler if needed like this:
-    ```javascript:
+    ```javascript
       $scope.gridOptions = {
         urlKey      :     "original_url",
         sortKey     :     "nth",
@@ -37,10 +38,11 @@ This directive used to built the grid of images (let's look at the demo source c
         margin      :     2,
         maxLength   :     7
       }
+    ```
 3. Then call in your template:
-    ```javascript:
+    ```javascript
     <div ng-photo-grid="" images="images" grid-options="gridOptions"></div>
-    
+    ```
 4. Open browser, if your images was random display, you can refresh (F5) browser again to see how the grid was built for others dimension like the example.
 
 #MIT License
