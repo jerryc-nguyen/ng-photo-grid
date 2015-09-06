@@ -26,7 +26,7 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
 
   var sources             = [img1, img2, img3, img4, img5, img6, img7, img8]
 
-  var sources2big            = [{original_url: "images/316x316.jpg", nth: 1}, {original_url: "images/800x800.jpg", nth: 2}, img3, img4, img5, img6]
+  var sources2big            = [{original_url: "http://lorempixel.com/316/316", nth: 1}, {original_url: "http://lorempixel.com/800/800", nth: 2}, img3, img4, img5, img6]
 
   $scope.rand             = function(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -39,7 +39,7 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
   $scope.buildCompletedHandler = function() {
     console.log ("built completed!")
     $scope.isBuildingGrid = false;
-    $scope.$apply()
+    
   }
 
   getSelectedSeeds = function() {
@@ -79,10 +79,10 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
     onBuilded   :     function() {
                         console.log ("built completed!")
                         $scope.isBuildingGrid = false;
-                        $scope.$apply()
+                        
                       },
     margin      :     2,
-    maxLength   :     5
+    maxLength   :     4
   }
 
   /**
@@ -97,11 +97,18 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
     onBuilded   :     function() {
                         console.log ("built completed!")
                         $scope.isBuildingGrid = false;
-                        $scope.$apply()
+                        
                       },
     margin      :     2,
     isSquare    :     true,
-    maxLength   :     5
+    maxLength   :     4
   }
-  
+    
+  $scope.squareGridGroup = [];
+
+  angular.forEach([1,2,3,4,5,6], function() {
+    $scope.squareGridGroup.push(angular.copy(getSelectedSeeds()))
+  })
+
+
 }])

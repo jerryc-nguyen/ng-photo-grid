@@ -11,7 +11,8 @@
       body { text-align: center; }
       .links a { padding: 0 5px ;}
       .active { color: red;}
-      .feed-item { width: 250px; margin: 0 auto;}
+      .content { width: 500px;}
+      .feed-item { width: 48%; float: left; margin: 1%;}
     </style>
   </head>
   <body ng-app='ngApp'>
@@ -31,9 +32,10 @@
         <a href="http://jerryc-nguyen.github.io/ng-photo-grid/full-width.html">Full width</a>
       <p>
       <div class='content'>
-        <div class="feed-item"> 
+
+        <div class="feed-item" ng-repeat = "groupImages in squareGridGroup"> 
           <div  ng-photo-grid =   ""
-                images        =   "images"
+                images        =   "groupImages"
                 grid-options  =   "gridOptionsSquare"
                 ng-class      =   "{'loading': isBuildingGrid}"
                 class         =   "feed-photos">

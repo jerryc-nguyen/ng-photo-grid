@@ -51,5 +51,10 @@ This directive used to built the grid of images (let's look at the demo source c
     ```
 ####4. Open browser, if your images were random, you can refresh (F5) browser again to see others style of grid was built.
 
-#MIT License
+####Others
+  If you find any issue, please post a issues or email me at: jerryc.nguyen92[at]gmail.com
+  Contribution are welcome.
+  [Thanks lorempixel.com](http://lorempixel.com) for better images in demo pages.
+  
+##MIT License
 
