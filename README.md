@@ -39,7 +39,6 @@ This directive used to built the grid of images (let's look at the demo source c
         onBuilded   :     function() {
                             console.log ("built completed!")
                             $scope.isBuildingGrid = false;
-                            $scope.$apply()
                           },
         margin      :     2,
         maxLength   :     7
@@ -52,8 +51,9 @@ This directive used to built the grid of images (let's look at the demo source c
 ####4. Open browser, if your images were random, you can refresh (F5) browser again to see others style of grid was built.
 
 ####Others
-  If you find any issue, please post a issues or email me at: jerryc.nguyen92[at]gmail.com
-  Contribution are welcome.
+  Contribution are welcome so if you find any issue, please post a issues or email me at: jerryc.nguyen92[at]gmail.com
+  
+  
   [Thanks lorempixel.com](http://lorempixel.com) for better images in demo pages.
   
 ##MIT License

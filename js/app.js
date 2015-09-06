@@ -82,7 +82,7 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
                         
                       },
     margin      :     2,
-    maxLength   :     4
+    maxLength   :     5
   }
 
   /**
