@@ -184,8 +184,12 @@ angular.module("ngPhotoGrid")
         cellRatio = cellWidth / cellHeight;
 
         // when the any image's dimension greater than cell's dimension
-        if(cellWidth > imageWidth && cellHeight > imageHeight || cellWidth > imageWidth || cellHeight > imageHeight) {
-          return { minHeight: "100%", width: "100%"}
+        if(cellWidth > imageWidth || cellHeight > imageHeight) {
+          if (cellWidth >= imageWidth) {
+            return getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio);
+          } else {
+            return getSmallImageLandscapeStyle(cellHeight, cellWidth, imgRatio);
+          }
         } else { // when the image smaller than the cell in both dimension
           if(imgRatio >= 1) {
             return getSmallImageLandscapeStyle(cellHeight, cellWidth, imgRatio);
@@ -210,12 +214,16 @@ angular.module("ngPhotoGrid")
       function getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio) {
         curImageHeight = cellHeight;
         curImageWidth = Math.round(curImageHeight  * imgRatio);
+        var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
+        var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
         if(curImageWidth <= cellWidth) {
-          var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
-          return { maxWidth: "100%", position: "relative", top: top + "px"}
+          if(imgRatio == 1) {
+            return { maxWidth: "100%", position: "relative", top: top + "px", "width": "100%"}
+          } else {
+            return { maxWidth: "100%", position: "relative", top: top + "px"}
+          }
         } else {
-          var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
-          return { maxWidth: "100%", minHeight: "100%"} //!this is workaround for 2first
+          return { maxHeight: "100%", position: "relative", left: left + "px"} 
         }
       }
       /**
@@ -318,8 +326,8 @@ angular.module("ngPhotoGrid")
             bigCellStyle.width    = GRID_WIDTH;
             smallCellStyle.height = GRID_WIDTH * 1 / 3 - MARGIN;
           } else {
-            bigCellStyle.width    = GRID_WIDTH;
-            bigCellStyle.height   = GRID_WIDTH / firstRatio;
+            bigCellStyle.width    = GRID_WIDTH ;
+            bigCellStyle.height   = GRID_WIDTH * 2 / 3;
           }
           smallCellStyle.width  = ( GRID_WIDTH - smallCellCount * MARGIN ) / smallCellCount;
           // determine the height of smallCell below
