@@ -1,5 +1,5 @@
 # ng-photo-grid
-Photo grid like facebook in angular js with no dependencies. Work well when images has different dimension, scale image but remain ratio. Also improve display image in cell too.
+Photo grid like facebook in angular js with no dependencies. Work well when images have variety in dimension, scale images but respect ratio and improve display images in cells.
 
 # [Examples page](http://jerryc-nguyen.github.io/ng-photo-grid/)
 
@@ -25,7 +25,9 @@ This module can be used with these options:
 
 ####Note: 
 
-      This directive used to built the grid of images (let's look at the demo source code to see how the array of images loadedok like), so you should prepare the array of images object first in controller then following this guide below.
+      This directive used to built the grid of images (let's look at the demo source code to see 
+
+      how the array of images loadedok like), so you should prepare the array of images object first in controller then following this guide below.
 
 ####1. Inject module to your angular app definition:
     
