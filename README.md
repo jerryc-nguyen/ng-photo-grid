@@ -25,9 +25,10 @@ This module can be used with these options:
 
 ####Note: 
 
-      This directive used to built the grid of images (let's look at the demo source code to see 
-
-      how the array of images loadedok like), so you should prepare the array of images object first in controller then following this guide below.
+      This directive used to built the grid of images 
+      (let's look at the demo source code to see how the array of images loadedok like), 
+      so you should prepare the array of images object first 
+      then following this guide below.
 
 ####1. Inject module to your angular app definition:
     
