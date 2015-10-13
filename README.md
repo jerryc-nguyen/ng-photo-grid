@@ -16,17 +16,18 @@ This module can be used with these options:
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------|----------|----------------|
 | urlKey         | object attribute present for image url  ex:{url:  "/example.jpg"} => urlKey: "url"                                                          | string   | "original_url" |
 | sortByKey      | object attribute present for order of object in array ex:[{nth: 1}, {nth: 2}] => sortByKey: "nth"                                           | string   | "nth"          |
-| onClicked      | image click event handler, argument of handler was clicked image object                                                                                      | function | none           |
-| onBuilded      | callback event handler when grid was built completed                                                                                                      | function | none           |
+| onClicked      | image click event handler, argument is clicked image                                                                                        | function | none           |
+| onBuilded      | callback when grid was built completed                                                                                                      | function | none           |
+| onDOMReady     | callback when DOM generated completely from array images object                                                                             | fucntion | none           |
 | margin         | space between each image on grid                                                                                                            | number   | 2              |
 | maxLength      | maximum objects in array grid choose to build                                                                                               | number   | 5              |
 | isSquare       | options to build grid has the height equals to width ex: used to display grid of grids without break layout                                 | boolean  | false          |
-| buildOnLoading | option to trigger build grid, building grid while images loading if it's true. Otherwise, grid will be built only one when all images loaded | boolean  | true           |
+| buildOnLoading | option to trigger build grid, grid be built while images loading if it's true. Otherwise, grid will be built only one when all image loaded | boolean  | true           |
 
 ####Note: 
 
       This directive used to built the grid of images 
-      (let's look at the demo source code to see how the array of images loadedok like), 
+      (let's look at the demo source code to see how the array of images look like), 
       so you should prepare the array of images object first 
       then following this guide below.
 
