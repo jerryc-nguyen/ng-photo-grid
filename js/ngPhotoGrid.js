@@ -222,7 +222,11 @@ angular.module("ngPhotoGrid")
         var curImageHeight = Math.round(curImageWidth  / imgRatio);
         if(curImageHeight >= cellHeight) {
           var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
-          return { maxWidth: "100%", position: "relative", top: top + "px"}
+          if(curImageWidth < cellWidth) {
+            return { width: "100%", position: "relative", top: top + "px"}
+          } else {
+            return { maxWidth: "100%", position: "relative", top: top + "px"}
+          }
         } else {
           var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
           return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"}
@@ -235,11 +239,7 @@ angular.module("ngPhotoGrid")
         var top = (-1) * Math.round((cellWidth / imgRatio - cellHeight) / 2);
         var left = (-1) * Math.round((cellHeight * imgRatio - cellWidth) / 2);
         if(curImageWidth <= cellWidth) {
-          if(imgRatio == 1) {
-            return { maxWidth: "100%", position: "relative", top: top + "px", "width": "100%"}
-          } else {
-            return { maxWidth: "100%", position: "relative", top: top + "px"}
-          }
+          return { width: "100%", position: "relative", top: top + "px"}
         } else {
           return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"} 
         }
