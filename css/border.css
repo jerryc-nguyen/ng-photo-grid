@@ -1,0 +1,14 @@
+/**
+* It's the part of module
+* used to style the border of grid
+* included this style if you want to border the grid cell
+*/
+.grid-cell:after {  
+  content: '';
+  position: absolute;
+  border: 1px solid rgba(0, 0, 0, 0.2); /*change this color if you want*/
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

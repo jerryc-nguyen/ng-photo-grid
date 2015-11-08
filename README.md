@@ -24,6 +24,7 @@ This module can be used with these options:
 | isSquare       | options to build grid has the height equals to width ex: used to display grid of grids without break layout                                 | boolean  | false          |
 | buildOnLoading | option to trigger build grid, grid be built while images loading if it's true. Otherwise, grid will be built only one when all image loaded | boolean  | true           |
 
+
 ####Note: 
 
       This directive used to built the grid of images 
@@ -56,6 +57,10 @@ This module can be used with these options:
     <div ng-photo-grid="" images="images" grid-options="gridOptions"></div>
   
 ####4. Open browser then see the magic, you can refresh (F5) browser again to see others style of grid was built (if your images were random order and have different dimension)
+
+####Updated: 08-11-2015
+  - Fixed display grid when has 2 images
+  - Added css border to grid cell. Include style in border.css if you want grid cell is bordered.
 
 ####Others
   Contribution are welcome so if you find any issue, please post issues or email me at: jerryc.nguyen92[at]gmail.com
