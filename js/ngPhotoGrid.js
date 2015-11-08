@@ -43,7 +43,8 @@ angular.module("ngPhotoGrid")
                                 margin          :     2,
                                 maxLength       :     5,
                                 isSquare        :     false,
-                                buildOnLoading  :     true
+                                buildOnLoading  :     true,
+                                gridBorderColor :     "#adadad"
                               }
 
       angular.extend(scope.defaultOptions, scope.gridOptions);
@@ -66,7 +67,9 @@ angular.module("ngPhotoGrid")
                       display:        'block',
                       overflow:       'hidden',
                       cssFloat:       'left',
-                      cursor:         'pointer'
+                      cursor:         'pointer',
+                      border:         "1px solid" + scope.defaultOptions.gridBorderColor,
+                      boxSizing:      "border-box"
                     };
 
       //callback handler
@@ -244,6 +247,7 @@ angular.module("ngPhotoGrid")
           return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"} 
         }
       }
+
       /**
       * build cell style for grid
       * @firstRatio   : ratio of the first image in list
@@ -272,12 +276,12 @@ angular.module("ngPhotoGrid")
 
         if(cellCount == 2) { //build style for grid has 2 images and first image has firstRatio > 1
 
-          if(firstRatio >= 1 || secondRatio >= 1 ) {
-            bigCellStyle.marginBottom    = MARGIN;
+          if(firstRatio >= 1) {
+            bigCellStyle.marginBottom = MARGIN;
             bigCellStyle.width    = GRID_WIDTH;
             bigCellStyle.height   = GRID_WIDTH / 2;
             smallCellStyle.width  = GRID_WIDTH;
-            smallCellStyle.height = GRID_WIDTH / 2;
+            smallCellStyle.height = GRID_WIDTH / 2 - MARGIN;
           } else {
             var marginSize              = MARGIN / cellCount;
             bigCellStyle.marginRight    = marginSize;
@@ -294,10 +298,10 @@ angular.module("ngPhotoGrid")
             } else {
               bigCellWidth          = Math.floor(GRID_WIDTH * WIDTH_RATE) - MARGIN;
               bigCellStyle.width    = bigCellWidth;
-              bigCellStyle.height   = bigCellWidth / firstRatio;
+              bigCellStyle.height   = bigCellWidth;
 
               smallCellWidth        = GRID_WIDTH - bigCellWidth - MARGIN;
-              smallCellHeight       = bigCellWidth / firstRatio;
+              smallCellHeight       = bigCellWidth;
               smallCellStyle.width  = smallCellWidth;
               smallCellStyle.height = smallCellHeight;
             }
