@@ -16,9 +16,10 @@ This module can be used with these options:
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------|----------|----------------|
 | urlKey         | object attribute present for image url  ex:{url:  "/example.jpg"} => urlKey: "url"                                                          | string   | "original_url" |
 | sortByKey      | object attribute present for order of object in array ex:[{nth: 1}, {nth: 2}] => sortByKey: "nth"                                           | string   | "nth"          |
+| isResponsive   | option to make the directive responsive                                                                                                     | boolean  | false          |
 | onClicked      | image click event handler, argument is clicked image                                                                                        | function | none           |
 | onBuilded      | callback when grid was built completed                                                                                                      | function | none           |
-| onDOMReady     | callback when DOM generated completely from array images object                                                                             | fucntion | none           |
+| onDOMReady     | callback when DOM generated completely from array images object                                                                             | function | none           |
 | margin         | space between each image on grid                                                                                                            | number   | 2              |
 | maxLength      | maximum objects in array grid choose to build                                                                                               | number   | 5              |
 | isSquare       | options to build grid has the height equals to width ex: used to display grid of grids without break layout                                 | boolean  | false          |
@@ -41,6 +42,7 @@ This module can be used with these options:
       $scope.gridOptions = {
         urlKey      :     "original_url",
         sortKey     :     "nth",
+        isResponsive:     false,
         onClicked   :     function(image) {
                             alert(JSON.stringify(image))
                           },
@@ -57,6 +59,9 @@ This module can be used with these options:
     <div ng-photo-grid="" images="images" grid-options="gridOptions"></div>
   
 ####4. Open browser then see the magic, you can refresh (F5) browser again to see others style of grid was built (if your images were random order and have different dimension)
+
+####Updated: 05-15-2017
+  - Added responsive option
 
 ####Updated: 08-11-2015
   - Fixed display grid when has 2 images
