@@ -86,6 +86,25 @@ angular.module("ngApp").controller("indexCtrl", ["$scope", function($scope){
   }
 
   /**
+   * Options definitions for responsive example
+   *----------------------*/
+  $scope.gridOptionsResponsive = {
+    urlKey      :     "original_url",
+    sortKey     :     "nth",
+    isResponsive:     true,
+    onClicked   :     function(image) {
+      alert(JSON.stringify(image))
+    },
+    onBuilded   :     function() {
+      console.log ("built completed!")
+      $scope.isBuildingGrid = false;
+
+    },
+    margin      :     2,
+    maxLength   :     5
+  }
+
+  /**
    * Options definitions for square example
    *----------------------------------------*/
   $scope.gridOptionsSquare = {

@@ -23,20 +23,17 @@ angular.module("ngPhotoGrid")
       }
     };
   })
-  .directive("ngPhotoGrid", ["$templateCache", function($templateCache){
+  .directive("ngPhotoGrid", ["$templateCache", "$window", function($templateCache, $window){
 
     $templateCache.put("photo_grid.html",
       "<ul class='photo-grid-wrapper' ng-style = 'parentStyle'><li class='grid-cell' ng-repeat= 'image in loadedImages track by $index' ng-style = 'image.cellStyle' ng-click='cellClicked(image)' end-repeat='' ng-attr-data-src='{{image[defaultOptions.urlKey] | photoUrlSafe}}'><img class='grid-cell-image' ng-style = 'image.imageStyle' ng-src='{{image[defaultOptions.urlKey]}}' alt='#'/></li></ul>");
 
     function linker(scope, element, attrs) {
-      scope.loadedImages      = [];
-      scope.loadedTakenImages = [];
-      scope.takenImages       = [];
-
       // ###OPTIONS
       scope.defaultOptions =  {
                                 urlKey          :     "original_url",
                                 sortByKey       :     "nth",
+                                isResponsive    :     false,
                                 onClicked       :     function() {},
                                 onBuilded       :     function() {},
                                 onDOMReady      :     function() {},
@@ -49,18 +46,28 @@ angular.module("ngPhotoGrid")
       angular.extend(scope.defaultOptions, scope.gridOptions);
 
       var IS_SQUARE    = scope.defaultOptions.isSquare;
-      var GRID_WIDTH   = element.prop('offsetWidth');
       var MARGIN       = scope.defaultOptions.margin;
+      var GRID_WIDTH;
 
-      if (!GRID_WIDTH) { // set the default width of parent
-        GRID_WIDTH = 250
+      scope.init = function () {
+        scope.loadedImages = [];
+        scope.loadedTakenImages = [];
+        scope.takenImages = [];
+
+        GRID_WIDTH = element.prop('offsetWidth');
+
+        if (!GRID_WIDTH) { // set the default width of parent
+          GRID_WIDTH = 250
+        }
+
+        scope.parentStyle = {width: GRID_WIDTH + "px", overflow: "hidden", position: "relative", margin: 0, padding: 0}
+
+        if (IS_SQUARE) {
+          scope.parentStyle.height = GRID_WIDTH + "px";
+        }
       }
 
-      scope.parentStyle = { width: GRID_WIDTH + "px", overflow: "hidden", position: "relative", margin: 0, padding: 0 }
-
-      if(IS_SQUARE) {
-        scope.parentStyle.height = GRID_WIDTH + "px";
-      }
+      scope.init();
 
       var commonStyle = {
                       display:        'block',
@@ -69,6 +76,8 @@ angular.module("ngPhotoGrid")
                       cursor:         'pointer',
                       position:       'relative'
                     };
+
+      var debounceTimer;
 
       //callback handler
       scope.cellClicked = function(image) {
@@ -123,11 +132,11 @@ angular.module("ngPhotoGrid")
                 scope.$apply()
               }, 10)
             }
-            
-            if(scope.loadedTakenImages.length == scope.takenImages.length) {   
+
+            if(scope.loadedTakenImages.length == scope.takenImages.length) {
               //trigger build completed handler
               scope.defaultOptions.onBuilded(element)
-   
+
               //grid also can be build after all image loaded
               //all image would be shown correctly, loading time cause poor UX
               if(!scope.defaultOptions.buildOnLoading) {
@@ -137,7 +146,7 @@ angular.module("ngPhotoGrid")
                 }, 15)
               }
             }
-            
+
           };
           img.src = image[scope.defaultOptions.urlKey];
         });
@@ -241,7 +250,7 @@ angular.module("ngPhotoGrid")
           return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"}
         }
       }
-          
+
       function getSmallImagePortraitStyle(cellHeight, cellWidth, imgRatio) {
         var curImageHeight = cellHeight;
         var curImageWidth = Math.round(curImageHeight  * imgRatio);
@@ -250,7 +259,7 @@ angular.module("ngPhotoGrid")
         if(curImageWidth <= cellWidth) {
           return { width: "100%", position: "relative", top: top + "px"}
         } else {
-          return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"} 
+          return { maxHeight: "100%", height: "100%", position: "relative", left: left + "px"}
         }
       }
 
@@ -262,7 +271,7 @@ angular.module("ngPhotoGrid")
       *------------------------------------------------*/
       buildCellStyle      = function (firstImage, secondImage, cellCount) {
         var firstRatio, secondRatio, bigCellStyle, smallCellStyle, lastCellStyle,
-            WIDTH_RATE, bigCellWidth, bigCellHeight, smallCellHeight, smallCellWidth, is2First, 
+            WIDTH_RATE, bigCellWidth, bigCellHeight, smallCellHeight, smallCellWidth, is2First,
             case2BigImage1, case2BigImage2;
 
         firstRatio              = firstImage.naturalWidth / firstImage.naturalHeight;
@@ -350,7 +359,7 @@ angular.module("ngPhotoGrid")
           bigCellStyle.marginBottom  = MARGIN;
           smallCellStyle.marginRight = MARGIN;
           var smallCellCount         = cellCount - 1;
-          
+
           if (IS_SQUARE) {
             bigCellStyle.height   = GRID_WIDTH * 2 / 3;
             bigCellStyle.width    = GRID_WIDTH;
@@ -476,6 +485,16 @@ angular.module("ngPhotoGrid")
           scope.preloadImages(images);
         }
       })
+
+      if (scope.defaultOptions.isResponsive === true) {
+        $window.addEventListener('resize', function (event) {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(function () {
+            scope.init();
+            scope.preloadImages(scope.images);
+          }, 250);
+        })
+      }
     }
 
     return {
